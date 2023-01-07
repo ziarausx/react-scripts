@@ -32,7 +32,6 @@ const ForkTsCheckerWebpackPlugin =
     ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
     : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-const BabelRemoveAttributesPlugin = require('babel-plugin-jsx-remove-data-test-id');
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
@@ -685,11 +684,6 @@ module.exports = function (webpackEnv) {
           // to make lazy-loading failure scenarios less likely.
           // See https://github.com/cra-template/pwa/issues/13#issuecomment-722667270
           maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
-        }),
-      // Remove test attributes from production build
-      isEnvProduction &&
-        new BabelRemoveAttributesPlugin({
-          attributes: ['data-test', 'data-testid'],
         }),
       // TypeScript type checking
       useTypeScript &&
