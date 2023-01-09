@@ -397,7 +397,15 @@ module.exports = function (webpackEnv) {
                     {
                       runtime: 'automatic',
                     },
-                  ]
+                  ],
+                  [
+                    '@babel/preset-env', {
+                      loose: true,
+                      useBuiltIns: "entry",
+                      corejs: "3.22",
+                      bugfixes: true
+                    }
+                  ],
                 ],
                 // @remove-on-eject-begin
                 babelrc: false,
@@ -423,6 +431,7 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
+                  require.resolve('babel-plugin-styled-components')
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
