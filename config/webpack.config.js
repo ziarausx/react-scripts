@@ -431,7 +431,10 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
-                  require.resolve('babel-plugin-styled-components')
+                  isEnvProduction &&
+                    require.resolve('babel-plugin-react-remove-properties', {
+                      properties: ['data-testid'],
+                    }),
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/

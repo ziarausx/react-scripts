@@ -1,6 +1,6 @@
 {
   "name": "react-scripts-dependencies-upgraded",
-  "version": "1.0.4",
+  "version": "1.0.7",
   "description": "React-scripts with all dependencies upgraded.",
   "repository": {
     "type": "git",
@@ -31,7 +31,7 @@
     "@swc/jest": "^0.2.24",
     "babel-loader": "^9.1.0",
     "babel-plugin-named-asset-import": "^0.3.8",
-    "babel-plugin-styled-components": "^2.0.7",
+    "babel-plugin-react-remove-properties": "^0.3.0",
     "babel-preset-react-app": "^10.0.1",
     "bfj": "^7.0.2",
     "browserslist": "^4.21.4",
