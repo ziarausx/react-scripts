@@ -757,6 +757,12 @@ module.exports = function (webpackEnv) {
           },
         },
         minRatio: 1
+      }),
+      new CompressionPlugin({
+        filename: "[path][base].gz",
+        algorithm: "gzip",  
+        test: /\.(js|jsx|html|css|scss|sass|svg)$/,
+        minRatio: 1
       })
     ].filter(Boolean),
     // Turn off performance processing because we utilize
