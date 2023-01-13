@@ -32,6 +32,8 @@ const ForkTsCheckerWebpackPlugin =
     ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
     : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+const zlib = require("zlib");
 // @remove-on-eject-begin
 const getCacheIdentifier = require('react-dev-utils/getCacheIdentifier');
 // @remove-on-eject-end
@@ -433,7 +435,7 @@ module.exports = function (webpackEnv) {
                     require.resolve('react-refresh/babel'),
                   isEnvProduction &&
                     require.resolve('babel-plugin-react-remove-properties', {
-                      properties: ['data-testid'],
+                      properties: ['data-testid', 'data-test-id'],
                     }),
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
@@ -745,6 +747,17 @@ module.exports = function (webpackEnv) {
             infrastructure: 'silent',
           },
         }),
+      new CompressionPlugin({
+        filename: "[path][base].br",
+        algorithm: "brotliCompress",  
+        test: /\.(js|jsx|html|css|scss|sass|svg)$/,
+        compressionOptions: {
+          params: {
+            [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+          },
+        },
+        minRatio: 1
+      })
     ].filter(Boolean),
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
