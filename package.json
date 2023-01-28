@@ -1,6 +1,6 @@
 {
   "name": "react-scripts-dependencies-upgraded",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "React-scripts with all dependencies upgraded.",
   "repository": {
     "type": "git",
@@ -71,6 +71,12 @@
     "workbox-webpack-plugin": "^6.5.4"
   },
   "devDependencies": {
+    "eslint": "^8.13.0",
+    "eslint-config-semistandard": "^17.0.0",
+    "eslint-config-standard": "^17.0.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-n": "^15.0.0",
+    "eslint-plugin-promise": "^6.0.0",
     "react": "^17.0.0 || ^18.0.0",
     "react-dom": "17.0.0 || ^18.0.0"
   },

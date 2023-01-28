@@ -21,7 +21,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
   const setupTestsFile = fs.existsSync(paths.testsSetup)
     ? `<rootDir>/src/setupTests.${setupTestsFileExtension}`
     : undefined;
-    
+
   // Use this instead of `paths.globalTestSetup` to avoid putting
   // an absolute filename into configuration after ejecting.
   const globalSetupMatches = paths.globalTestSetup.match(/src[/\\]globalSetup\.(.+)/);
@@ -39,7 +39,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
     setupFiles: [
       isEjecting
         ? 'react-app-polyfill/jsdom'
-        : require.resolve('react-app-polyfill/jsdom'),
+        : require.resolve('react-app-polyfill/jsdom')
     ],
 
     setupFilesAfterEnv: setupTestsFile ? [setupTestsFile] : [],
@@ -53,18 +53,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
       url: 'https://jestjs.io/'
     },
     transform: {
-      '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': [
-        '@swc/jest',
-        {
-          jsc: {
-            transform: {
-              react: {
-                runtime: 'automatic'
-              }
-            }
-          }
-        }
-      ]
+      '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': ['@swc/jest']
     },
     transformIgnorePatterns: [
       '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
@@ -84,8 +73,9 @@ module.exports = (resolve, rootDir, isEjecting) => {
     ),
     watchPlugins: [
       'jest-watch-typeahead/filename',
-      'jest-watch-typeahead/testname',
+      'jest-watch-typeahead/testname'
     ],
+    extensionsToTreatAsEsm: ['.ts', '.tsx'],
     clearMocks: true,
     testTimeout: 15000
   };
@@ -111,7 +101,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
     'testMatch',
     'transform',
     'transformIgnorePatterns',
-    'watchPathIgnorePatterns',
+    'watchPathIgnorePatterns'
   ];
   if (overrides) {
     supportedKeys.forEach(key => {
