@@ -93,10 +93,11 @@ module.exports = function (webpackEnv) {
   // Get environment variables to inject into our app.
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
-  const shouldUseReactRefresh = env.raw.FAST_REFRESH;
+  // Fas refresh is now disabled by default
+  const shouldUseReactRefresh = env.raw.FAST_REFRESH === 'true';
 
-  // Should compress the bundle
-  const shouldCompressBundle = isEnvProduction || process.env.COMPRESS_BUNDLE === 'true';
+  // Remove attributes from the HTML - default to true if production unless KEEP_ATTRIBUTES is set
+  const shouldRemoveAttributes = isEnvProduction && process.env.KEEP_ATTRIBUTES !== 'true';
 
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor) => {
@@ -270,7 +271,65 @@ module.exports = function (webpackEnv) {
         }),
         // This is only used in production mode
         new CssMinimizerPlugin()
-      ]
+      ],
+      splitChunks: {
+        cacheGroups: {
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            filename: 'vendors.[contenthash].js',
+            chunks: 'all',
+            priority: 1
+          },
+          iamip: {
+            test: /[\\/]src[\\/]/,
+            filename: 'iamip.[contenthash].js',
+            chunks: 'all',
+            priority: 2
+          },
+          iamipCore: {
+            test: /[\\/]src[\\/](components)/,
+            filename: 'iamipComponents.[contenthash].js',
+            chunks: 'all',
+            priority: 6
+          },
+          reactVendor: {
+            test: /[\\/]node_modules[\\/](react|react-dom)/,
+            filename: 'react.[contenthash].js',
+            chunks: 'all',
+            priority: 11
+          },
+          momentVendor: {
+            test: /[\\/]node_modules[\\/](moment)/,
+            filename: 'moment.[contenthash].js',
+            chunks: 'all',
+            priority: 8
+          },
+          analyzeModule: {
+            test: /[\\/]node_modules[\\/](anmap|amchart)/,
+            filename: 'analyzeModule.[contenthash].js',
+            chunks: 'all',
+            priority: 7
+          },
+          xregexp: {
+            test: /[\\/]node_modules[\\/](xregexp)/,
+            filename: 'xregexp.[contenthash].js',
+            chunks: 'all',
+            priority: 10
+          },
+          lodash: {
+            test: /[\\/]node_modules[\\/](lodash|immutable|i18next)/,
+            filename: 'helpers.[contenthash].js',
+            chunks: 'all',
+            priority: 10
+          },
+          componentsVendor: {
+            test: /[\\/]node_modules[\\/](@tanstack|imask|rangy)/,
+            filename: 'componentsVendor.[contenthash].js',
+            chunks: 'all',
+            priority: 9
+          }
+        }
+      }
     },
     resolve: {
       // Fallback for react-jsx runtime. This is needed for react 17 and some packages.
@@ -336,23 +395,11 @@ module.exports = function (webpackEnv) {
           // match the requirements. When no loader matches it will fall
           // back to the "file" loader at the end of the loader list.
           oneOf: [
-            // TODO: Merge this config once `image/avif` is in the mime-db
-            // https://github.com/jshttp/mime-db
-            {
-              test: [/\.avif$/],
-              type: 'asset',
-              mimetype: 'image/avif',
-              parser: {
-                dataUrlCondition: {
-                  maxSize: imageInlineSizeLimit
-                }
-              }
-            },
             // "url" loader works like "file" loader except that it embeds assets
             // smaller than specified limit in bytes as data URLs to avoid requests.
             // A missing `test` is equivalent to a match.
             {
-              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
+              test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/, /\.avif$/],
               type: 'asset',
               parser: {
                 dataUrlCondition: {
@@ -362,15 +409,14 @@ module.exports = function (webpackEnv) {
             },
             {
               test: /\.svg$/,
+              issuer: /\.[jt]sx?$/,
               use: [
                 {
                   loader: require.resolve('@svgr/webpack'),
                   options: {
-                    prettier: false,
-                    svgo: false,
-                    svgoConfig: {
-                      plugins: [{ removeViewBox: false }]
-                    },
+                    typescript: true,
+                    ext: 'ts',
+                    svgo: true,
                     titleProp: true,
                     ref: true,
                     jsxRuntime: 'automatic'
@@ -382,10 +428,7 @@ module.exports = function (webpackEnv) {
                     name: 'static/media/[name].[hash].[ext]'
                   }
                 }
-              ],
-              issuer: {
-                and: [/\.(ts|tsx|js|jsx|md|mdx)$/]
-              }
+              ]
             },
             // Process application JS with Babel.
             // The preset includes JSX, Flow, TypeScript, and some ESnext features.
@@ -401,7 +444,8 @@ module.exports = function (webpackEnv) {
                   [
                     require.resolve('babel-preset-react-app'),
                     {
-                      runtime: 'automatic'
+                      runtime: 'automatic',
+                      typescript: useTypeScript
                     }
                   ],
                   [
@@ -437,7 +481,7 @@ module.exports = function (webpackEnv) {
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
-                  isEnvProduction &&
+                  shouldRemoveAttributes &&
                     require.resolve('babel-plugin-react-remove-properties', {
                       properties: ['data-testid', 'data-test-id']
                     })
@@ -752,7 +796,7 @@ module.exports = function (webpackEnv) {
             infrastructure: 'silent'
           }
         }),
-      shouldCompressBundle && new CompressionPlugin({
+      isEnvProduction && new CompressionPlugin({
         filename: '[path][base].br',
         algorithm: 'brotliCompress',
         test: /\.(js|jsx|html|css|scss|sass|svg)$/,
@@ -763,7 +807,7 @@ module.exports = function (webpackEnv) {
         },
         minRatio: 1
       }),
-      shouldCompressBundle && new CompressionPlugin({
+      isEnvProduction && new CompressionPlugin({
         filename: '[path][base].gz',
         algorithm: 'gzip',
         test: /\.(js|jsx|html|css|scss|sass|svg)$/,
