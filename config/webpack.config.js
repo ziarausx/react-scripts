@@ -94,7 +94,7 @@ module.exports = function (webpackEnv) {
   const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 
   // Fas refresh is now disabled by default
-  const shouldUseReactRefresh = env.raw.FAST_REFRESH === 'true';
+  const shouldUseReactRefresh = env.raw.FAST_REFRESH;
 
   // Remove attributes from the HTML - default to true if production unless KEEP_ATTRIBUTES is set
   const shouldRemoveAttributes = isEnvProduction && process.env.KEEP_ATTRIBUTES !== 'true';
