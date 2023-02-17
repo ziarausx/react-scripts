@@ -95,7 +95,11 @@ function getClientEnvironment (publicUrl) {
         WDS_SOCKET_PORT: process.env.WDS_SOCKET_PORT,
         // Whether or not react-refresh is enabled.
         // It is defined here so it is available in the webpackHotDevClient.
-        FAST_REFRESH: process.env.FAST_REFRESH === 'true'
+        FAST_REFRESH: process.env.FAST_REFRESH === 'true',
+        // Whatever or not to keep test attributes in the DOM
+        KEEP_ATTRIBUTES: process.env.KEEP_ATTRIBUTES === 'true',
+        // Whatever or not to use babel styled components plugin
+        STYLED_COMPONENTS: process.env.STYLED_COMPONENTS === 'true'
       }
     );
   // Stringify all values so we can feed into webpack DefinePlugin

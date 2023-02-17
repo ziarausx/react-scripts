@@ -99,6 +99,9 @@ module.exports = function (webpackEnv) {
   // Remove attributes from the HTML - default to true if production unless KEEP_ATTRIBUTES is set
   const shouldRemoveAttributes = isEnvProduction && process.env.KEEP_ATTRIBUTES !== 'true';
 
+  // Use babel styled components plugin to parse styled components
+  const useStyledComponentsPlugin = process.env.STYLED_COMPONENTS === 'true';
+
   // common function to get style loaders
   const getStyleLoaders = (cssOptions, preProcessor) => {
     const loaders = [
@@ -449,7 +452,7 @@ module.exports = function (webpackEnv) {
                     }
                   ],
                   [
-                    '@babel/preset-env', {
+                    require.resolve('@babel/preset-env'), {
                       loose: true,
                       useBuiltIns: 'entry',
                       corejs: '3.22',
@@ -478,6 +481,12 @@ module.exports = function (webpackEnv) {
                 ),
                 // @remove-on-eject-end
                 plugins: [
+                  useStyledComponentsPlugin &&
+                    require.resolve('babel-plugin-styled-components', {
+                      ssr: false,
+                      displayName: false,
+                      fileName: false
+                    }),
                   isEnvDevelopment &&
                     shouldUseReactRefresh &&
                     require.resolve('react-refresh/babel'),
