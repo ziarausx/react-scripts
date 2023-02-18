@@ -483,7 +483,8 @@ module.exports = function (webpackEnv) {
                 plugins: [
                   useStyledComponentsPlugin &&
                     [require.resolve('babel-plugin-styled-components'), {
-                      meaninglessFileNames: ['index', 'styles'],
+                      meaninglessFileNames: ['index', 'styles', 'components'],
+                      fileName: isEnvDevelopment,
                       pure: true
                     }],
                   isEnvDevelopment &&
