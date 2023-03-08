@@ -11,11 +11,16 @@
 const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
+const NODE_ENV = process.env.START_ENV || process.env.NODE_ENV;
+const { execSync } = require('child_process');
+
+function getGitCodeVersion () {
+  return execSync('git rev-parse --short HEAD').toString().trim();
+}
 
 // Make sure that including paths.js after env.js will read .env variables.
 delete require.cache[require.resolve('./paths')];
 
-const NODE_ENV = process.env.START_ENV || process.env.NODE_ENV;
 if (!NODE_ENV) {
   throw new Error(
     'The NODE_ENV environment variable is required but was not specified.'
@@ -99,7 +104,9 @@ function getClientEnvironment (publicUrl) {
         // Whatever or not to keep test attributes in the DOM
         KEEP_ATTRIBUTES: process.env.KEEP_ATTRIBUTES === 'true',
         // Whatever or not to use babel styled components plugin
-        STYLED_COMPONENTS: process.env.STYLED_COMPONENTS === 'true'
+        STYLED_COMPONENTS: process.env.STYLED_COMPONENTS === 'true',
+        // Version based on git commit
+        GIT_CODE_VERSION: JSON.stringify(getGitCodeVersion())
       }
     );
   // Stringify all values so we can feed into webpack DefinePlugin
