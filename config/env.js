@@ -106,7 +106,9 @@ function getClientEnvironment (publicUrl) {
         // Whatever or not to use babel styled components plugin
         STYLED_COMPONENTS: process.env.STYLED_COMPONENTS === 'true',
         // Version based on git commit
-        GIT_CODE_VERSION: JSON.stringify(getGitCodeVersion())
+        GIT_CODE_VERSION: JSON.stringify(getGitCodeVersion()),
+        // Rollbar environment
+        ROLLBAR_ENV: process.env.ROLLBAR_ENV || 'development'
       }
     );
   // Stringify all values so we can feed into webpack DefinePlugin
