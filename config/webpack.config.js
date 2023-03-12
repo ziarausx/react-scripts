@@ -60,6 +60,10 @@ const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
 
+// Additional brotli compression files.
+// Not needed if you use gzip
+const shouldCompressWithBrotli = process.env.BROCOLLI_COMPRESS === 'true';
+
 const imageInlineSizeLimit = parseInt(
   process.env.IMAGE_INLINE_SIZE_LIMIT || '10000'
 );
@@ -211,7 +215,7 @@ module.exports = function (webpackEnv) {
             .relative(paths.appSrc, info.absoluteResourcePath)
             .replace(/\\/g, '/')
         : isEnvDevelopment &&
-          (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'))
+        (info => path.resolve(info.absoluteResourcePath).replace(/\\/g, '/'))
     },
     cache: {
       type: 'filesystem',
@@ -234,6 +238,7 @@ module.exports = function (webpackEnv) {
       minimizer: [
         // This is only used in production mode
         new TerserPlugin({
+          exclude: ['vendor', 'reactVendor', 'momentVendor', 'analyzeVendor', 'xregexpVendor', 'lodashVendor', 'assets'],
           terserOptions: {
             parse: {
               ecma: 2020
@@ -250,6 +255,23 @@ module.exports = function (webpackEnv) {
             module: true
           }
         }),
+        new TerserPlugin({
+          include: ['vendor', 'reactVendor', 'momentVendor', 'analyzeVendor', 'xregexpVendor', 'lodashVendor', 'assets'],
+          terserOptions: {
+            parse: {
+              ecma: 2020
+            },
+            compress: {
+              defaults: true,
+              ecma: 2020,
+              module: true
+            },
+            format: {
+              ecma: 2020
+            },
+            module: true
+          }
+        }),
         // This is only used in production mode
         new CssMinimizerPlugin()
       ],
@@ -257,57 +279,77 @@ module.exports = function (webpackEnv) {
         cacheGroups: {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
-            filename: 'vendors.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 1
           },
-          iamip: {
-            test: /[\\/]src[\\/]/,
-            filename: 'iamip.[contenthash].js',
+          assets: {
+            test: /[\\/]src[\\/](assets)/,
+            filename: '[contenthash].js',
             chunks: 'all',
-            priority: 2
+            priority: 5
           },
-          iamipCore: {
+          helpers: {
+            test: /[\\/]src[\\/](helpers)/,
+            filename: '[contenthash].js',
+            chunks: 'all',
+            priority: 5
+          },
+          components: {
             test: /[\\/]src[\\/](components)/,
-            filename: 'iamipComponents.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 6
           },
           reactVendor: {
             test: /[\\/]node_modules[\\/](react|react-dom)/,
-            filename: 'react.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 11
           },
           momentVendor: {
             test: /[\\/]node_modules[\\/](moment)/,
-            filename: 'moment.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 8
           },
-          analyzeModule: {
+          analyzeVendor: {
             test: /[\\/]node_modules[\\/](anmap|amchart)/,
-            filename: 'analyzeModule.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 7
           },
-          xregexp: {
+          xregexpVendor: {
             test: /[\\/]node_modules[\\/](xregexp)/,
-            filename: 'xregexp.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 10
           },
-          lodash: {
+          lodashVendor: {
             test: /[\\/]node_modules[\\/](lodash|immutable|i18next)/,
-            filename: 'helpers.[contenthash].js',
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 10
           },
           componentsVendor: {
-            test: /[\\/]node_modules[\\/](@tanstack|imask|rangy)/,
-            filename: 'componentsVendor.[contenthash].js',
+            test: /[\\/]node_modules[\\/](@tanstack|imask|rangy|react-js-pagination|react-paginate|react-autosize-textarea|react-datetime|react-dropzone)/,
+            filename: '[contenthash].js',
             chunks: 'all',
             priority: 9
+          },
+          src: {
+            test: /[\\/]src[\\/]/,
+            filename: '[contenthash].js',
+            chunks: 'all',
+            priority: 1
+          },
+          services: {
+            test: /[\\/]src[\\/]services/,
+            filename: '[contenthash].js',
+            chunks: 'all',
+            priority: 11,
+            minSize: 0,
+            minSizeReduction: 0
           }
         }
       }
@@ -460,18 +502,18 @@ module.exports = function (webpackEnv) {
                 // @remove-on-eject-end
                 plugins: [
                   useStyledComponentsPlugin &&
-                    [require.resolve('babel-plugin-styled-components'), {
-                      meaninglessFileNames: ['index', 'styles', 'components'],
-                      fileName: isEnvDevelopment,
-                      pure: true
-                    }],
+                  [require.resolve('babel-plugin-styled-components'), {
+                    meaninglessFileNames: ['index', 'styles', 'components'],
+                    fileName: isEnvDevelopment,
+                    pure: true
+                  }],
                   isEnvDevelopment &&
-                    shouldUseReactRefresh &&
-                    require.resolve('react-refresh/babel'),
+                  shouldUseReactRefresh &&
+                  require.resolve('react-refresh/babel'),
                   shouldRemoveAttributes &&
-                    [require.resolve('babel-plugin-react-remove-properties'), {
-                      properties: ['data-testid', 'data-test-id']
-                    }]
+                  [require.resolve('babel-plugin-react-remove-properties'), {
+                    properties: ['data-testid', 'data-test-id']
+                  }]
                 ].filter(Boolean),
                 // This is a feature of `babel-loader` for webpack (not Babel itself).
                 // It enables caching results in ./node_modules/.cache/babel-loader/
@@ -783,7 +825,7 @@ module.exports = function (webpackEnv) {
           infrastructure: 'silent'
         }
       }),
-      isEnvProduction && new CompressionPlugin({
+      isEnvProduction && shouldCompressWithBrotli && new CompressionPlugin({
         filename: '[path][base].br',
         algorithm: 'brotliCompress',
         test: /\.(js|jsx|html|css|scss|sass|svg)$/,
