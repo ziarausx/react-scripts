@@ -36,7 +36,6 @@ module.exports = (resolve, rootDir, isEjecting) => {
 
     collectCoverageFrom: ['src/**/*.{js,jsx,ts,tsx}', '!src/**/*.d.ts'],
     coverageReporters: ['text', 'cobertura', 'text-summary'],
-    reporters: ['jest-junit'],
 
     setupFiles: [
       isEjecting
@@ -89,6 +88,7 @@ module.exports = (resolve, rootDir, isEjecting) => {
     'clearMocks',
     'collectCoverageFrom',
     'coveragePathIgnorePatterns',
+    'reporters',
     'coverageReporters',
     'coverageThreshold',
     'displayName',
