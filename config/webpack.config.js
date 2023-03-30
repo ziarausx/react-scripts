@@ -28,10 +28,7 @@ const paths = require('./paths');
 const modules = require('./modules');
 const getClientEnvironment = require('./env');
 const ModuleNotFoundPlugin = require('react-dev-utils/ModuleNotFoundPlugin');
-const ForkTsCheckerWebpackPlugin =
-  process.env.TSC_COMPILE_ON_ERROR === 'true'
-    ? require('react-dev-utils/ForkTsCheckerWarningWebpackPlugin')
-    : require('react-dev-utils/ForkTsCheckerWebpackPlugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const zlib = require('zlib');
@@ -820,9 +817,6 @@ module.exports = function (webpackEnv) {
             { file: '**/src/setupTests.*' },
             { file: '**/src/globalSetup.*' }
           ]
-        },
-        logger: {
-          infrastructure: 'silent'
         }
       }),
       isEnvProduction && shouldCompressWithBrotli && new CompressionPlugin({
