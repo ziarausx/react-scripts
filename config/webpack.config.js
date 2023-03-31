@@ -796,10 +796,14 @@ module.exports = function (webpackEnv) {
           },
           context: paths.appPath,
           diagnosticOptions: {
-            syntactic: true
+            syntactic: true,
+            semantic: true,
+            declaration: false,
+            global: false
           },
-          mode: 'write-references'
-          // profile: true,
+          memoryLimit: 4096,
+          mode: 'write-dts',
+          profile: isEnvDevelopment
         },
         issue: {
           // This one is specifically to match during CI tests,
@@ -811,6 +815,7 @@ module.exports = function (webpackEnv) {
             { file: '**/src/**/*.{ts,tsx}' }
           ],
           exclude: [
+            { file: '**/src/**/__mocks__/**' },
             { file: '**/src/**/__tests__/**' },
             { file: '**/src/**/?(*.){spec|test}.*' },
             { file: '**/src/setupProxy.*' },
