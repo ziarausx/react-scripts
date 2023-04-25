@@ -89,6 +89,7 @@ module.exports = function (proxy, allowedHost) {
       overlay: {
         errors: true,
         warnings: false,
+        runtimeErrors: false,
       },
     },
     devMiddleware: {
