@@ -64,9 +64,9 @@ module.exports = (resolve, rootDir, isEjecting) => {
     modulePaths: modules.additionalModulePaths || [],
     moduleNameMapper: {
       '\\.(css|less|scss|sass)$': '<rootDir>/src/__mocks__/stub.css',
-      '\\.svg$': '<rootDir>/src/__mocks__/svg.js',
+      '\\.svg$': '<rootDir>/src/__mocks__/svg.ts',
       '\\.(jpg|ico|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2)$':
-        '<rootDir>/src/__mocks__/fileMock.js',
+        '<rootDir>/src/__mocks__/fileMock.ts',
       uuid: require.resolve('uuid')
     },
     moduleFileExtensions: [...paths.moduleFileExtensions, 'node'].filter(
