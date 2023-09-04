@@ -57,10 +57,9 @@ module.exports = (resolve, rootDir, isEjecting) => {
       '^.+\\.(js|jsx|mjs|cjs|ts|tsx)$': ['@swc/jest']
     },
     transformIgnorePatterns: [
-      '[/\\\\]node_modules[/\\\\](?!react-dnd|dnd-core|@react-dnd)',
-      '[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs|cjs|ts|tsx)$',
+      '/node_modules/*.(js|jsx|mjs|cjs|ts|tsx)$',
       '^.+\\.module\\.(css|sass|scss)$',
-      '\\.pnp\\.[^\\/]+$'
+      '\\.pnp\\.[^\\/]+$',
     ],
     modulePaths: modules.additionalModulePaths || [],
     moduleNameMapper: {
