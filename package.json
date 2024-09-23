@@ -1,7 +1,7 @@
 {
   "name": "react-scripts-dependencies-upgraded",
-  "version": "1.7.0-beta.0",
-  "packageManager": "yarn@4.4.0",
+  "version": "1.7.0-beta.1",
+  "packageManager": "npm@10.8.3",
   "description": "React-scripts with all dependencies upgraded.",
   "repository": {
     "type": "git",
