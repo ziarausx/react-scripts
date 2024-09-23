@@ -253,7 +253,7 @@ module.exports = function (webpackEnv) {
           }
         }),
         new TerserPlugin({
-          include: ['vendor', 'reactVendor', 'momentVendor', 'analyzeVendor', 'xregexpVendor', 'lodashVendor', 'assets'],
+          include: ['vendor', 'reactVendor', 'analyzeVendor', 'lodashVendor', 'assets'],
           terserOptions: {
             parse: {
               ecma: 2020
@@ -304,23 +304,11 @@ module.exports = function (webpackEnv) {
             chunks: 'all',
             priority: 11
           },
-          momentVendor: {
-            test: /[\\/]node_modules[\\/](moment)/,
-            filename: '[contenthash].js',
-            chunks: 'all',
-            priority: 8
-          },
           analyzeVendor: {
             test: /[\\/]node_modules[\\/](anmap|amchart)/,
             filename: '[contenthash].js',
             chunks: 'all',
             priority: 7
-          },
-          xregexpVendor: {
-            test: /[\\/]node_modules[\\/](xregexp)/,
-            filename: '[contenthash].js',
-            chunks: 'all',
-            priority: 10
           },
           lodashVendor: {
             test: /[\\/]node_modules[\\/](lodash|immutable|i18next)/,
@@ -329,7 +317,7 @@ module.exports = function (webpackEnv) {
             priority: 10
           },
           componentsVendor: {
-            test: /[\\/]node_modules[\\/](@tanstack|imask|rangy|react-js-pagination|react-paginate|react-autosize-textarea|react-datetime|react-dropzone)/,
+            test: /[\\/]node_modules[\\/](@tanstack|imask|rangy|react-js-pagination|react-paginate|react-textarea-autosize|react-datetime|react-dropzone)/,
             filename: '[contenthash].js',
             chunks: 'all',
             priority: 9
@@ -478,7 +466,7 @@ module.exports = function (webpackEnv) {
                   ]
                 ],
                 // @remove-on-eject-begin
-                babelrc: false,
+                babelrc: true,
                 configFile: false,
                 // Make sure we have a unique cache identifier, erring on the
                 // side of caution.
@@ -528,7 +516,7 @@ module.exports = function (webpackEnv) {
               exclude: /@babel(?:\/|\\{1,2})runtime/,
               loader: require.resolve('babel-loader'),
               options: {
-                babelrc: false,
+                babelrc: true,
                 configFile: false,
                 compact: false,
                 presets: [
